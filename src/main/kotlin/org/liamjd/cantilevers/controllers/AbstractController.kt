@@ -3,6 +3,8 @@ package org.liamjd.cantilevers.controllers
 import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.bind
 import com.github.salomonbrys.kodein.provider
+import org.liamjd.cantilevers.services.sparql.SparqlService
+import org.liamjd.cantilevers.services.sparql.WikiDataSparqlService
 import org.slf4j.LoggerFactory
 import spark.Request
 import spark.Session
@@ -29,7 +31,9 @@ abstract class AbstractController(path: String) {
 
 	// Service dependency injection
 	open var injectServices = Kodein {
+		bind<SparqlService>("wikidata") with provider { WikiDataSparqlService() }
 	}
+
 
 	init {
 		this.path = path
