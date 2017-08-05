@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{fragments/head-imports :: links(pageTitle=${title})}">
+</div>
+<body>
+
+<!-- main navigation -->
+<div th:replace="~{fragments/top-navigation :: main-navigation}"></div>
+
+<div class="container">
+
+</div>
+
+<!-- footer -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<!--Import jQuery before materialize.js-->
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:replace="~{fragments/head-imports :: links(pageTitle=${title})}">
+</div>
+<body>
+
+<!-- main navigation -->
+<div th:replace="~{fragments/top-navigation :: main-navigation}"></div>
+
+<div class="container">
+
+	<div class="row">
+		<div class="col s12">
+			<h3>Add Bridge</h3></div>
+		<!---->
+		<form id="home-search-add-form">
+			<div class="input-field col s4">
+				<label for="add-bridge-name">Name</label>
+				<input id="add-bridge-name" type="text" placeholder="Search for bridge name" name="add-bridge-name" required="true"/>
+			</div>
+			<div class="input-field col s3">
+				<div id="add-brudge-btn-open" class="btn waves-effect waves-light teal darken-1" th:onclick="'openAddSearchModal();'"><i class="material-icons right">search</i>Search
+				</div>
+				<!--	<button id="add-bridge-btn-submit" type="submit" class="btn waves-effect waves-light teal darken-1" th:onclick="'openAddSearchPost(\'ajax\/add-search\/\',
+							\'#addSearch\',
+							\'#addSearchContainer\',
+							\'add-bridge-name\'
+						   );'">Search</button>-->
+				<!--<button id="add-bridge-btn-submit" type="submit" class="btn waves-effect waves-light teal darken-1">Search
+					<i class="material-icons right">search</i></button>-->
+			</div>
+		</form><!---->
+	</div>
+
+	<div class="row">
+		<div class="col s12">
+			<h3>Featured Bridges</h3>
+			<table class="striped responsive-table">
+				<thead>
+				<tr>
+					<th>Name</th>
+					<th>Location</th>
+					<th>Length</th>
+					<th>Type</th>
+				</tr>
+				</thead>
+				<tbody>
+				<tr>
+					<td>Forth Bridge</td>
+					<td>Scotland</td>
+					<td>2467 m</td>
+					<td>Cantilever <span class="teal-text lighten-4">Steel Truss</span></td>
+				</tr>
+				<tr>
+					<td>Forth Road Bridge</td>
+					<td>Scotland</td>
+					<td>2512 m</td>
+					<td>Suspension <span class="teal-text lighten-4">Steel</span></td>
+				</tr>
+				<tr>
+					<td>Queensferry Crossing</td>
+					<td>Scotland</td>
+					<td>2638 m</td>
+					<td>Cable-stayed</td>
+				</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+
+
+	<!-- modals and popups -->
+	<div id="addSearchContainer" class="modal">
+		<div class="modal-content">
+			<div class="row">
+				<div class="col s12">
+					<h4>Search for Bridge</h4>
+				</div>
+			</div>
+			<div class="row">
+				<div id="addSearch" class="col s12">
+					<form id="add-search-popup-form">
+						<div class="input-field col s8">
+							<label for="add-bridge-name-pop">Name</label>
+							<input id="add-bridge-name-pop" type="text" placeholder="Search for bridge name" name="add-bridge-name-pop" required="true"/>
+						</div>
+						<div class="input-field col s4">
+							<!--<label for="add-bridge-country-pop">Country</label>-->
+							<select id="add-bridge-country-pop" name="add-bridge-country-pop" class="active">
+								<option label="Scotland">Scotland</option>
+								<option label="UK">United Kingdom</option>
+							</select>
+						</div>
+					</form>
+				</div>
+			</div>
+			<div class="row" id="sparql-results">
+
+			</div>
+		</div>
+		<div class="modal-footer">
+			<a href="#!" class="modal-action modal-close waves-effect waves-green btn-flat">Close</a>
+		</div>
+	</div>
+
+
+</div>
+
+<!-- footer -->
+<div th:replace="~{fragments/footer :: footer}"></div>
+
+<!--Import jQuery before materialize.js-->
+<script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
+
+<script src="/js/common.js"></script>
+
+</body>
+</html>

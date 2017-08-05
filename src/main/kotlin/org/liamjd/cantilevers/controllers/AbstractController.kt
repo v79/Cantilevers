@@ -92,4 +92,16 @@ abstract class AbstractController(path: String) {
 		return "flash" + key + "Count"
 	}
 
+	fun debugParams(request: Request) {
+		request.params().forEach {
+			logger.debug("Param ${it.key} -> ${it.value}")
+		}
+	}
+
+	fun debugSplat(request: Request) {
+		for (s in request.splat()) {
+			logger.info("Splat -> $s")
+		}
+	}
+
 }
