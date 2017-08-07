@@ -24,8 +24,8 @@ class WikiDataSparqlService : SparqlService {
   OPTIONAL {
     ?bridge wdt:P2043 ?length .
     }
-
-  FILTER(STRSTARTS (?bridgeName, """" + nameToFind!! + """")).
+ 
+  FILTER(STRSTARTS(LCASE(?bridgeName), """" + nameToFind!! + """")).
 
 }
 LIMIT 100
