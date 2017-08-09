@@ -53,7 +53,6 @@ class HomeController : AbstractController(path = "/") {
 						model.put("add-search-name", bridgeName)
 					}
 					logger.info("Search for bridge with name ${bridgeName} triggered")
-//				engine.render(ModelAndView(model, "modals/home-add-search"))
 					if (bridgeName != null) {
 						val responseString = getWikidataSuggestions(bridgeName)
 						response.body(responseString)
@@ -65,19 +64,24 @@ class HomeController : AbstractController(path = "/") {
 				}
 			}
 			get("refine-search/*") {
-				val bridgeName: String? = request.splat()[0]
-				if (bridgeName != null) {
-					model.put("add-search-name",bridgeName)
-				}
-				logger.info("Search for bridge with name ${bridgeName} triggered")
-//				engine.render(ModelAndView(model, "modals/home-add-search"))
-				if(bridgeName != null) {
-					val responseString = getWikidataSuggestions(bridgeName)
-					response.body(responseString)
-					response.status(HttpStatus.OK_200)
+				val errors = validateSearchRequestSplat(request.splat())
+				if(errors.isNotEmpty()) {
+					flash(request,"errors",errors)
+					response.header("spark-error-redirect","/")
 				} else {
-					response.body("Could not find a bridge with name $bridgeName")
-					response.status(HttpStatus.OK_200)
+					val bridgeName: String? = request.splat()[0]
+					if (bridgeName != null) {
+						model.put("add-search-name", bridgeName)
+					}
+					logger.info("Search for bridge with name ${bridgeName} triggered")
+					if (bridgeName != null) {
+						val responseString = getWikidataSuggestions(bridgeName)
+						response.body(responseString)
+						response.status(HttpStatus.OK_200)
+					} else {
+						response.body("Could not find a bridge with name $bridgeName")
+						response.status(HttpStatus.OK_200)
+					}
 				}
 			}
 		}

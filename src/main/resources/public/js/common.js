@@ -28,11 +28,11 @@ function openAddSearchModal() {
 
     $.ajax({
         url: "/ajax/add-search/" + name,
-        success: function(data, statusString, jqxhr) {
+        success: function(response, statusString, jqxhr) {
             if(jqxhr.getResponseHeader( 'spark-error-redirect' )) {
                 window.location.href = jqxhr.getResponseHeader( 'spark-error-redirect' )
             } else {
-                $("#sparql-results").html(data);
+                $("#sparql-results").html(response);
                 $('#addSearchContainer').modal('open');
             }
         }
@@ -43,7 +43,7 @@ function refineSearch() {
     var name = $('#add-bridge-name-pop').val()
     $.ajax({
         url: "/ajax/refine-search/" + name,
-        success: function(data) {
+        success: function(response, statusString, jqxhr) {
             $("#sparql-results").html(data);
         }
     })
