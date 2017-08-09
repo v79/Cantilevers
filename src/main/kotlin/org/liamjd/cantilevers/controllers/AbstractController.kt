@@ -81,11 +81,13 @@ abstract class AbstractController(path: String) {
 	}
 
 	fun clearFlashForKey(request: Request, key: String) {
-		val flashAttr: MutableMap<String, Any> = request.session().attribute("flash")
-		if (flashAttr.containsKey(key)) {
-			flashAttr.remove(key)
+		val flashAttr: MutableMap<String, Any>? = request.session().attribute("flash")
+		if (flashAttr != null) {
+			if (flashAttr.containsKey(key)) {
+				flashAttr.remove(key)
+			}
+			request.session().attribute(getFlashKeyCountName(key), null)
 		}
-		request.session().attribute(getFlashKeyCountName(key), null)
 	}
 
 	fun emptyFlash(request: Request) {

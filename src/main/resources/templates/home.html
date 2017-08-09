@@ -11,25 +11,19 @@
 
 	<div class="row">
 		<div class="col s12">
-			<h3>Add Bridge</h3></div>
-		<!---->
+			<h3>Add Bridge</h3>
+		</div>
+
 		<form id="home-search-add-form">
 			<div class="input-field col s4">
-				<label for="add-bridge-name">Name</label>
+				<label for="add-bridge-name" id="labelForName">Name <span th:if="${errors != null}" th:text="${errors.get('name')}" class="red-text"></span></label>
 				<input id="add-bridge-name" type="text" placeholder="Search for bridge name" name="add-bridge-name" required="true"/>
 			</div>
 			<div class="input-field col s3">
 				<div id="add-brudge-btn-open" class="btn waves-effect waves-light teal darken-1" th:onclick="'openAddSearchModal();'"><i class="material-icons right">search</i>Search
 				</div>
-				<!--	<button id="add-bridge-btn-submit" type="submit" class="btn waves-effect waves-light teal darken-1" th:onclick="'openAddSearchPost(\'ajax\/add-search\/\',
-							\'#addSearch\',
-							\'#addSearchContainer\',
-							\'add-bridge-name\'
-						   );'">Search</button>-->
-				<!--<button id="add-bridge-btn-submit" type="submit" class="btn waves-effect waves-light teal darken-1">Search
-					<i class="material-icons right">search</i></button>-->
 			</div>
-		</form><!---->
+		</form>
 	</div>
 
 	<div class="row">
@@ -90,6 +84,13 @@
 								<option label="Scotland">Scotland</option>
 								<option label="UK">United Kingdom</option>
 							</select>
+						</div>
+						<div class="row">
+							<div class="col s4 push-s4">
+								<div id="add-bridge-refine" class="btn waves-effect waves-light teal darken-1" th:onclick="'refineSearch();'"><i
+										class="material-icons right">search</i>Refine Search
+								</div>
+							</div>
 						</div>
 					</form>
 				</div>
