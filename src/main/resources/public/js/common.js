@@ -8,7 +8,6 @@ $(document).ready(function() {
     // initialize material selects
     $('select').material_select();
 
-
 }); // end of document ready
 
 // generic function to open a modal dialog. Specify the controller path which will supply the view, and the HTML divs to update
@@ -20,6 +19,27 @@ function openModal(sparkPath, dataDiv, containerDiv) {
             $(containerDiv).modal('open')
         }
     })
+}
+
+function validateAndRedirect(validatorPath, formName, containerDiv, redirectPath) {
+    var serializedData = $('#' + formName).serialize();
+    console.log(serializedData)
+    // first, post to validator
+    $.ajax({
+        url: validatorPath,
+        method: 'post',
+        data: serializedData,
+        success: function(response, statusText, xhr) {
+            // if valid, move on to next action
+            if(!response) {
+                window.location.href = redirectPath
+            } else {
+                // if in error, form should be re-rendered
+                $('#' + containerDiv).html(response);
+                Materialize.updateTextFields();
+            }
+        }
+    });
 }
 
 function openAddSearchModal() {

@@ -1,15 +1,15 @@
 package org.liamjd.cantilevers
 
 import org.liamjd.cantilevers.annotations.SparkController
+import org.reflections.Reflections
+import org.reflections.scanners.MethodAnnotationsScanner
+import org.reflections.scanners.SubTypesScanner
+import org.reflections.scanners.TypeAnnotationsScanner
 import org.slf4j.LoggerFactory
 import spark.kotlin.port
 import spark.kotlin.staticFiles
 import spark.servlet.SparkApplication
 import java.util.*
-import org.reflections.Reflections
-import org.reflections.scanners.MethodAnnotationsScanner
-import org.reflections.scanners.SubTypesScanner
-import org.reflections.scanners.TypeAnnotationsScanner
 
 class CantileverServer : SparkApplication {
 	val logger = LoggerFactory.getLogger(CantileverServer::class.java)
@@ -28,6 +28,8 @@ class CantileverServer : SparkApplication {
 			logger.info("Instantiating controller " + it.simpleName)
 			it.newInstance()
 		}
+
+
 
 		displayStartupMessage(portNumber?.toInt())
 	}

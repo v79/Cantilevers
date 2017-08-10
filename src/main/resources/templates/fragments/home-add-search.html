@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<form id="home-search-add-form" th:fragment="form" xmlns:th="http://www.thymeleaf.org">
+	<div class="row">
+		<div class="input-field col s6">
+			<label for="add-bridge-name">Name <span
+					th:if="${errors != null}" th:text="${errors.get('name')}" class="red-text input.invalid">Name</span></label>
+			<input id="add-bridge-name" type="text" placeholder="Search for bridge name" name="add-bridge-name" required="true" th:value="${name}"/>
+		</div>
+		<div class="input-field col s3">
+			<div id="add-bridge-btn-open" class="btn waves-effect waves-light teal darken-1"
+			     onclick="validateAndRedirect('/ajax/validate/','home-search-add-form','home-search-add-container','/bridge/search');"><i class="material-icons right">add</i>Add
+			</div>
+		</div>
+	</div>
+</form>
+</html>

@@ -13,17 +13,9 @@
 		<div class="col s12">
 			<h3>Add Bridge</h3>
 		</div>
-
-		<form id="home-search-add-form">
-			<div class="input-field col s4">
-				<label for="add-bridge-name" id="labelForName">Name <span th:if="${errors != null}" th:text="${errors.get('name')}" class="red-text"></span></label>
-				<input id="add-bridge-name" type="text" placeholder="Search for bridge name" name="add-bridge-name" required="true"/>
-			</div>
-			<div class="input-field col s3">
-				<div id="add-brudge-btn-open" class="btn waves-effect waves-light teal darken-1" th:onclick="'openAddSearchModal();'"><i class="material-icons right">search</i>Search
-				</div>
-			</div>
-		</form>
+	</div>
+	<div id="home-search-add-container">
+		<div th:replace="~{fragments/home-add-search :: form}"/>
 	</div>
 
 	<div class="row">

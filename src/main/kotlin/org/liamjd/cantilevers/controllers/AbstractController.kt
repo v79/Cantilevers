@@ -40,6 +40,7 @@ abstract class AbstractController(path: String) {
 		// put before and after filters here
 		before {
 			session = request.session(true)
+			logger.info(request.pathInfo())
 
 			// update all flash item counts
 			val flashAttr: MutableMap<String, Any>? = request.session().attribute("flash")

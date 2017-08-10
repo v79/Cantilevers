@@ -1,12 +1,12 @@
 package org.liamjd.cantilevers.controllers
 
 import com.github.salomonbrys.kodein.instance
-import org.eclipse.jetty.http.HttpStatus
 import org.liamjd.cantilevers.annotations.SparkController
 import org.liamjd.cantilevers.services.sparql.SparqlService
 import spark.ModelAndView
 import spark.Spark
 import spark.kotlin.get
+import spark.kotlin.post
 
 @SparkController
 class HomeController : AbstractController(path = "/") {
@@ -18,15 +18,15 @@ class HomeController : AbstractController(path = "/") {
 		fun validateSearchRequestSplat(splatArray: Array<String>): Map<String, String> {
 			val errorMap = mutableMapOf<String, String>()
 
-			if(splatArray != null && splatArray.isNotEmpty()) {
+			if (splatArray != null && splatArray.isNotEmpty()) {
 				val name: String? = splatArray[0]
 				name?.let {
-					if(name.length < 3) {
-						errorMap.put("name","Name must contain at least three characters")
+					if (name.length < 3) {
+						errorMap.put("name", "Name must contain at least three characters")
 					}
 				}
 			} else {
-				errorMap.put("name","Cannot search for an empty string")
+				errorMap.put("name", "Cannot search for an empty string")
 			}
 
 			return errorMap
@@ -35,56 +35,41 @@ class HomeController : AbstractController(path = "/") {
 
 	init {
 		wikiDataService = injectServices.instance("wikidata")
+
 		get(path) {
-			model.put("title","Cantilevers Bridge Database")
-			engine.render(ModelAndView(model,"home"))
+			model.put("title", "Cantilevers Bridge Database")
+			engine.render(ModelAndView(model, "home"))
 		}
 
-		Spark.path("/ajax/") {
-			get("add-search/*") {
-
-				val errors = validateSearchRequestSplat(request.splat())
-				if(errors.isNotEmpty()) {
-					flash(request,"errors",errors)
-					response.header("spark-error-redirect","/")
+		Spark.path(path + "ajax/") {
+			post("validate/") {
+				val name: String? = request.queryParams("add-bridge-name")
+				val errorMap = validateName(name)
+				if (errorMap.isEmpty()) {
+					logger.info("No errors found")
+					response.status(200)
+					response.body("")
+					flash(request,"bridgeName",name!!)
 				} else {
-					val bridgeName: String? = request.splat()[0]
-					if (bridgeName != null) {
-						model.put("add-search-name", bridgeName)
-					}
-					logger.info("Search for bridge with name ${bridgeName} triggered")
-					if (bridgeName != null) {
-						val responseString = getWikidataSuggestions(bridgeName)
-						response.body(responseString)
-						response.status(HttpStatus.OK_200)
-					} else {
-						response.body("Could not find a bridge with name $bridgeName")
-						response.status(HttpStatus.OK_200)
-					}
-				}
-			}
-			get("refine-search/*") {
-				val errors = validateSearchRequestSplat(request.splat())
-				if(errors.isNotEmpty()) {
-					flash(request,"errors",errors)
-					response.header("spark-error-redirect","/")
-				} else {
-					val bridgeName: String? = request.splat()[0]
-					if (bridgeName != null) {
-						model.put("add-search-name", bridgeName)
-					}
-					logger.info("Search for bridge with name ${bridgeName} triggered")
-					if (bridgeName != null) {
-						val responseString = getWikidataSuggestions(bridgeName)
-						response.body(responseString)
-						response.status(HttpStatus.OK_200)
-					} else {
-						response.body("Could not find a bridge with name $bridgeName")
-						response.status(HttpStatus.OK_200)
-					}
+					model.put("errors", errorMap)
+					model.put("name",name!!)
+					engine.render(ModelAndView(model, "fragments/home-add-search"))
 				}
 			}
 		}
+	}
+
+	private fun validateName(bridgeName: String?): Map<String, String> {
+		val errors: MutableMap<String, String> = mutableMapOf()
+		if (bridgeName == null || bridgeName.isEmpty()) {
+			errors.put("name", "Name must not be blank")
+		} else {
+			if (bridgeName.length < 4 || bridgeName.length > 50) {
+				errors.put("name", "Name must be between 3 and 50 characters long")
+			}
+		}
+
+		return errors
 	}
 
 	private fun getWikidataSuggestions(bridgeName: String): String {
