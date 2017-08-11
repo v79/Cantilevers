@@ -111,4 +111,12 @@ abstract class AbstractController(path: String) {
 		}
 	}
 
+	fun debugModel() {
+		logger.info("MODEL: " + model.toString())
+	}
+
+	fun debugFlash(request: Request) {
+		logger.info("FLASH: " + request.session().attribute("flash"))
+	}
+
 }

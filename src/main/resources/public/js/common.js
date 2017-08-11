@@ -7,6 +7,7 @@ $(document).ready(function() {
 
     // initialize material selects
     $('select').material_select();
+    Materialize.updateTextFields();
 
 }); // end of document ready
 

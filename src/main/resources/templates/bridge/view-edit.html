@@ -8,6 +8,51 @@
 <div th:replace="~{fragments/top-navigation :: main-navigation}"></div>
 
 <div class="container">
+	<div class="row">
+		<div class="col s12" id="headingName">
+			<h2 th:text="${bridgeName}">Bridge name</h2>
+		</div>
+	</div>
+	<div id="bridge-refine-search-container">
+		<form id="bridge-refine-search-form">
+			<div class="row">
+				<div class="input-field col s5">
+					<label for="refine-search-name" class="active">Name <span
+							th:if="${errors != null}" th:text="${errors.get('name')}" class="red-text input.invalid">Name</span></label>
+					<input id="refine-search-name" name="bridgeName" th:value="${bridgeName}"/>
+				</div>
+				<div class="input-field col s4">
+					<label for="refine-search-country" class="active">Country</label>
+					<select id="refine-search-country" name="country">
+						<option value="UK">UK</option>
+						<option value="Germany">Germany</option>
+					</select>
+				</div>
+				<div class="input-field col s3">
+					<div id="refine-search=button" class="btn waves-effect waves-light teal darken-1"
+					     onclick="triggerSearch();"><i class="material-icons right">search</i>Search
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col s12">
+					<fieldset id="refine-expand-fieldset">
+						<p>More options here</p>
+					</fieldset>
+				</div>
+			</div>
+		</form>
+	</div>
+
+	<div class="row">
+		<div class="col s12" id="results">
+			<div th:replace="~{bridge/fragments/search-edit-results :: results}"/>
+			<div class="progress">
+				<div class="indeterminate"></div>
+			</div>
+		</div>
+	</div>
+
 
 </div>
 
@@ -17,6 +62,7 @@
 <!--Import jQuery before materialize.js-->
 <script type="text/javascript" src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/0.99.0/js/materialize.min.js"></script>
-
+<script src="/js/common.js"></script>
+<script src="/js/bridge.js"></script>
 </body>
 </html>
