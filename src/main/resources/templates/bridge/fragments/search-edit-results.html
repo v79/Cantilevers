@@ -1,44 +1,35 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<div th:if="${results !=null}"  th:fragment="results" xmlns:th="http://www.thymeleaf.org">
+<div th:if="${results !=null}" th:fragment="results" xmlns:th="http://www.thymeleaf.org">
+
 	<form id="results-preview">
-		<table class="striped responsive-table">
-			<thead>
-				<tr>
-					<th>Name</th>
-					<th>Location</th>
-					<th>ID</th>
-					<th>Preview</th>
-					<th>Select</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr th:each="bridge : ${results}">
-					<td th:text="${bridge.name}">name</td>
-					<td th:text="${bridge.coords}">Location</td>
-					<td th:text="${bridge.wikiDataID}">ID</td>
-					<td><a href="#" th:onclick="'showBridgePreview(\'' + ${bridge.wikiDataID} + '\');'"><i
-							class="material-icons right">pageview</i></a></td>
-					<td><input type="radio" name="group1" th:id="r + ${bridge.wikiDataID}" th:value="${bridge.wikiDataID}"></td>
-				</tr>
-			</tbody>
-		</table>
-		<div class="col s2 input-field offset-s10">
-				<input class="btn waves-effect waves-light teal darken-1" type="button" value="Choose"></input>
+
+		<div class="row">
+			<div class="col s12">
+				<ul class="collapsible" data-collapsible="accordion">
+					<li th:each="bridge : ${results}">
+						<div class="collapsible-header"><span th:text="${bridge}">Bridge information</span>
+							<div class="secondary-content">
+								<a href="#" th:onclick="'expand(\'' + ${bridge.wikiDataID} + '\',
+									\'' + ${bridgeStat.index} + '\');'">
+									<i class="material-icons bridgeCollapsibleArrow" th:id="|expandArrow_${bridgeStat.index}|">expand_more</i>
+								</a>
+								<input type="radio" name="bridgeGroup" th:id="|radio_${bridge.wikiDataID}|"/>
+								<label th:for="|radio_${bridge.wikiDataID}|">&nbsp;</label>
+							</div>
+						</div>
+						<div th:id="|col_${bridge.wikiDataID}|" class="collapsible-body">More bridge details</div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="row">
+			<div class="col s3 input-field offset-s9">
+				<div class="btn waves-effect waves-light teal darken-1"><i
+						class="material-icons right">check</i>Choose
+				</div>
+			</div>
 		</div>
 	</form>
-	<!--
-	<a class="secondary-content"
-					   th:onclick="'openModal(\'ajax\/delete\/' + ${u.id} + '\',
-					    \'#userToDelete\',
-					    \'#confirmDeleteContainer\'
-					   );'"><i
-							class="material-icons">delete</i></a>
-				</
-				-->
 
-	<div id="preview">
-		<p>Preview goes here</p>
-	</div>
 </div>
 </html>

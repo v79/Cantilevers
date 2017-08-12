@@ -1,6 +1,7 @@
 package org.liamjd.cantilevers.controllers
 
 import org.liamjd.cantilevers.annotations.SparkController
+import org.liamjd.cantilevers.controllers.validators.BridgeValidator
 import spark.ModelAndView
 import spark.Spark
 import spark.kotlin.get
@@ -19,7 +20,7 @@ class HomeController : AbstractController(path = "/") {
 		Spark.path(path + "ajax/") {
 			post("validate/") {
 				val name: String? = request.queryParams("add-bridge-name")
-				val errorMap = validateName(name)
+				val errorMap = BridgeValidator.validateName(name)
 				if (errorMap.isEmpty()) {
 					logger.info("No errors found")
 					response.status(200)
@@ -34,17 +35,6 @@ class HomeController : AbstractController(path = "/") {
 		}
 	}
 
-	private fun validateName(bridgeName: String?): Map<String, String> {
-		val errors: MutableMap<String, String> = mutableMapOf()
-		if (bridgeName == null || bridgeName.isEmpty()) {
-			errors.put("name", "Name must not be blank")
-		} else {
-			if (bridgeName.length < 4 || bridgeName.length > 50) {
-				errors.put("name", "Name must be between 3 and 50 characters long")
-			}
-		}
 
-		return errors
-	}
 
 }

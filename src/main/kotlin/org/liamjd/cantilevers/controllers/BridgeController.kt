@@ -24,7 +24,7 @@ class BridgeController: AbstractController("/bridge") {
 			"Shouldn't be here - TODO"
 		}
 		get(path + "/search") {
-			model.put("title", "Edit Bridge | Cantilevers Bridge Database")
+			model.put("title", "Choose Bridge | Cantilevers Bridge Database")
 			engine.render(ModelAndView(model, "bridge/view-edit"))
 		}
 
@@ -33,6 +33,7 @@ class BridgeController: AbstractController("/bridge") {
 				"ajax"
 			}
 			post("/triggerSearch") {
+				// TODO: Validate the bridge name
 				var bridgeName: String? = request.queryParams("bridgeName")
 				if(bridgeName == null) {
 					bridgeName = model["bridgeName"] as String
@@ -46,7 +47,8 @@ class BridgeController: AbstractController("/bridge") {
 			get("/getPreview") {
 				val wikiDataID: String? = request.queryParams("wikiDataID")
 				val previewBridge = suggestions.find { it.wikiDataID == wikiDataID }
-				previewBridge?.wikiDataJSON.toString()
+				model.put("preview",previewBridge?.wikiDataJSON.toString().substring(0,100))
+				engine.render(ModelAndView(model,"bridge/fragments/preview"))
 			}
 
 		}

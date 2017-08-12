@@ -5,8 +5,9 @@ $(document).ready(function() {
         dismissible: true
     });
 
-    // initialize material selects
+    // initialize material components
     $('select').material_select();
+    $('.collapsible').collapsible();
     Materialize.updateTextFields();
 
 }); // end of document ready

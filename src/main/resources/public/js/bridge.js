@@ -15,6 +15,7 @@ $(document).ready(function() {
 }); // end of document ready
 
 function triggerSearch() {
+  var bridgeName = $('#refine-search-name').val();
   var serializedData = $('#bridge-refine-search-form').serialize();
   console.log(serializedData);
   $.ajax({
@@ -23,6 +24,7 @@ function triggerSearch() {
     data: serializedData,
     success: function(response, statusText, xhr) {
         $('#results').html(response);
+          $('#bridge-name-heading').html(bridgeName);
     }
   });
 }
@@ -38,5 +40,25 @@ function showBridgePreview(wikiDataID) {
             $('#preview').show();
         }
     });
+}
 
+function expand(wikiDataID, rowNum) {
+    var activeHeader = $('.collapsible-header');
+    if(activeHeader.hasClass('active')) {
+        $('#expandArrow_' + rowNum).html('expand_more');
+        $('.collapsible').collapsible('close',rowNum);
+    } else {
+        var preview = { "wikiDataID": wikiDataID};
+           $.ajax({
+               url: 'ajax/getPreview',
+               method: 'get',
+               data: preview,
+               success: function(response, statusText, xhr) {
+                    $('#col_' + wikiDataID).html(response);
+                    $('.collapsible').collapsible('open',rowNum);
+                    $('.bridgeCollapsibleArrow').html('expand_more');
+                    $('#expandArrow_' + rowNum).html('expand_less');
+               }
+           });
+   }
 }
