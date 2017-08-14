@@ -10,63 +10,6 @@ class WikiDataSparqlService : SparqlService {
 
 	val logger = LoggerFactory.getLogger(WikiDataSparqlService::class.java)
 
-	override fun query(queryMap: Map<String, String>): String {
-		val nameToFind = queryMap.get("name")
-		val url = java.net.URLEncoder.encode("""SELECT DISTINCT ?bridge ?bridgeLabel ?countryLabel ?length ?coord WHERE {
-  ?bridge wdt:P31/wdt:P279* wd:Q12280.
-  ?bridge wdt:P17 ?country .
-  ?bridge wdt:P625 ?coord.
-
-  ?bridge rdfs:label ?bridgeName .
-
-  ?country wdt:P17 wd:Q145 .
-
-  SERVICE wikibase:label { bd:serviceParam wikibase:language "[AUTO_LANGUAGE],en". }
-
-  OPTIONAL {
-    ?bridge wdt:P2043 ?length .
-    }
- 
-  FILTER(STRSTARTS(LCASE(?bridgeName), """" + nameToFind!! + """")).
-
-}
-LIMIT 100
-""", "ISO-8859-1")
-
-
-		println(url)
-		println("https://query.wikidata.org/sparql?query=" + url + "?format=json")
-
-		val result = URL("https://query.wikidata.org/sparql?format=json&query=" + url).readText()
-
-		val parser: Parser = Parser()
-		val json: JsonObject = parser.parse(StringBuilder(result)) as JsonObject
-
-		val wikidataURI = json.obj("results")?.array<JsonObject>("bindings")?.obj("bridge")?.string("value")?.singleOrNull()
-		var wikidataID: String? = null
-		if (wikidataURI != null) {
-			wikidataID = wikidataURI.split("/").last()
-		}
-		val name = json.obj("results")?.array<JsonObject>("bindings")?.obj("bridgeLabel")?.string("value")?.singleOrNull()
-		val length = json.obj("results")?.array<JsonObject>("bindings")?.obj("length")?.string("value")?.singleOrNull()
-		val coords = json.obj("results")?.array<JsonObject>("bindings")?.obj("coord")?.string("value")?.singleOrNull()
-//
-		println(json.toJsonString(true))
-
-		println("wikidataID: " + wikidataID)
-		println("Name: " + name)
-		println("Length: " + length)
-		println("Coords: " + coords)
-
-		val bridgeInfo = name + ", " + length + " metres, at  " + coords
-
-		val wikidatajsonurl = URL("https://www.wikidata.org/wiki/Special:EntityData/" + wikidataID + ".json")
-		val wikidatajson = wikidatajsonurl.readText()
-		val fullJson = parser.parse(StringBuilder(wikidatajson)) as JsonObject
-
-		return bridgeInfo
-	}
-
 	override fun queryList(queryMap: Map<String, String>): List<Bridge> {
 		val nameToFind = queryMap.get("name")
 		logger.info("Searching wikidata for $nameToFind")
@@ -95,6 +38,8 @@ LIMIT 100
 		logger.info("https://query.wikidata.org/sparql?query=" + url + "?format=json")
 
 		val result = URL("https://query.wikidata.org/sparql?format=json&query=" + url).readText()
+
+
 		val parser: Parser = Parser()
 		val json: JsonObject = parser.parse(StringBuilder(result)) as JsonObject
 

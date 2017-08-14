@@ -35,6 +35,4 @@ class HomeController : AbstractController(path = "/") {
 		}
 	}
 
-
-
 }

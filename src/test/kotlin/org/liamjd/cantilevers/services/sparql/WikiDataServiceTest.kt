@@ -9,20 +9,6 @@ class WikiDataServiceTest {
 	val service = WikiDataSparqlService()
 
 	@Test
-	fun `should make call to wikidata`() {
-		// setup
-		val paramMap = mutableMapOf<String,String>()
-		paramMap.put("name","Forth Road")
-
-		// execute
-		val result = service.query(paramMap)
-
-		// verify
-//		Assert.assertEquals("Q933000",thingy)
-		Assert.assertNotNull(result)
-	}
-
-	@Test
 	fun `should make call to wikidata and get multiple results`() {
 		// setup
 		val paramMap = mutableMapOf<String,String>()
