@@ -6,7 +6,7 @@ import com.beust.klaxon.obj
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-data class Bridge(val wikiDataID: String, val name: String, val length: Int?, val wikiDataJSON: String?, val coords: String?) {
+data class Bridge(val wikiDataID: String, val name: String, val description: String?, val length: Int?, val wikiDataJSON: String?, val coords: String?) {
 
 	var lastModified: LocalDate? = null
 
@@ -23,12 +23,13 @@ data class Bridge(val wikiDataID: String, val name: String, val length: Int?, va
 	override fun toString(): String {
 		val sb: StringBuilder = StringBuilder()
 		sb.append(name).append(", ")
+		if(description != null) {
+			sb.append("${description}, ")
+		}
 		if(length != null) {
 			sb.append(length).append("m,")
 		}
-		if(coords != null) {
-			sb.append(" at $coords,")
-		}
+
 		sb.append(" ($wikiDataID)")
 
 		return sb.toString()

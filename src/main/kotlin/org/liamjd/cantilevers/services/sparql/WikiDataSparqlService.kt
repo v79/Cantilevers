@@ -62,7 +62,7 @@ class WikiDataSparqlService : SparqlService {
 
 			logger.info("Searching wikidata for $nameToFind")
 
-			val propArray = arrayOf("bridgeLabel", "countryLabel", "length", "coord")
+			val propArray = arrayOf("bridgeLabel", "bridgeDescription", "countryLabel", "length", "coord")
 			val url = java.net.URLEncoder.encode(buildQuery("bridge", propArray, "Q145", nameToFind, 10), "ISO-8859-1")
 
 			logger.info("https://query.wikidata.org/sparql?query=" + url + "?format=json")
@@ -77,6 +77,7 @@ class WikiDataSparqlService : SparqlService {
 
 			jsonArray?.forEach {
 				val name = it.obj("bridgeLabel")?.string("value")
+				val description = it.obj("bridgeDescription")?.string("value")
 				val length = it.obj("length")?.string("value")
 				val coords = it.obj("coord")?.string("value")
 //			val types = it.obj("typeLabel")?.get("value") as String
@@ -85,7 +86,7 @@ class WikiDataSparqlService : SparqlService {
 				val wikidatajsonurl = URL("https://www.wikidata.org/wiki/Special:EntityData/" + wikidataID + ".json")
 				val wikidatajson = wikidatajsonurl.readText()
 				val fullJson = parser.parse(StringBuilder(wikidatajson)) as JsonObject
-				val bridge: Bridge = Bridge(wikiDataID = wikidataID!!, name = name!!, length = length?.toInt(), coords = coords, wikiDataJSON = fullJson.toJsonString(true))
+				val bridge: Bridge = Bridge(wikiDataID = wikidataID!!, name = name!!, description = description, length = length?.toInt(), coords = coords, wikiDataJSON = fullJson.toJsonString(true))
 				logger.info("Bridge found: ${bridge}")
 				bridgeList.add(bridge)
 			}
@@ -96,7 +97,7 @@ class WikiDataSparqlService : SparqlService {
 
 	companion object {
 		private val exampleName = "Forth"
-		val sparqlQueryString = java.net.URLEncoder.encode("""SELECT DISTINCT ?bridge ?bridgeLabel ?countryLabel ?length ?coord WHERE {
+		val sparqlQueryString = java.net.URLEncoder.encode("""SELECT DISTINCT ?bridge ?bridgeLabel ?bridgeDescription ?countryLabel ?length ?coord WHERE {
 ?bridge wdt:P31/wdt:P279* wd:Q12280.
 ?bridge wdt:P17 ?country .
 ?bridge wdt:P625 ?coord.
@@ -110,7 +111,7 @@ OPTIONAL {
 ?bridge wdt:P2043 ?length .
 }
 
-FILTER(STRSTARTS (?bridgeName, """" + exampleName!! + """")).
+FILTER(STRSTARTS (?bridgeName, """" + exampleName + """")).
 
 }
 LIMIT 100

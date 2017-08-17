@@ -5,6 +5,7 @@ import com.beust.klaxon.Parser
 import com.github.salomonbrys.kodein.instance
 import org.liamjd.cantilevers.annotations.SparkController
 import org.liamjd.cantilevers.services.sparql.SparqlService
+import org.liamjd.cantilevers.services.wikidata.WikiDataService
 import org.liamjd.cantilevers.viewmodel.Bridge
 import spark.ModelAndView
 import spark.Spark
@@ -14,10 +15,12 @@ import spark.kotlin.post
 @SparkController
 class BridgeController: AbstractController("/bridge") {
 
-	lateinit var wikiDataService: SparqlService
+	val sparqlService: SparqlService
+	val wikiDataService: WikiDataService
 	var suggestions: List<Bridge> = mutableListOf()
 
 	init {
+		sparqlService = injectServices.instance("sparql")
 		wikiDataService = injectServices.instance("wikidata")
 
 		get(path) {
@@ -46,8 +49,20 @@ class BridgeController: AbstractController("/bridge") {
 
 			get("/getPreview") {
 				val wikiDataID: String? = request.queryParams("wikiDataID")
-				val previewBridge = suggestions.find { it.wikiDataID == wikiDataID }
-				model.put("preview",previewBridge?.wikiDataJSON.toString().substring(0,100))
+				wikiDataID?.let {
+					// TODO: cache these somewhere
+					val bridgePreviewStatements = wikiDataService.getStatementsForDocument(wikiDataID)
+					val previewBuilder = StringBuilder()
+					bridgePreviewStatements.forEach {
+						previewBuilder.append(wikiDataService.getPropertyLabel(it.key,"en-gb")).appendln(": ")
+						previewBuilder.append(it.value.toString())
+					}
+					model.put("preview",previewBuilder.toString())
+
+				}
+
+//				val previewBridge = suggestions.find { it.wikiDataID == wikiDataID }
+//				model.put("preview",previewBridge?.wikiDataJSON.toString().substring(0,100))
 				engine.render(ModelAndView(model,"bridge/fragments/preview"))
 			}
 
@@ -57,7 +72,7 @@ class BridgeController: AbstractController("/bridge") {
 	private fun getWikidataSuggestions(bridgeName: String): List<Bridge> {
 		val queryMap = mutableMapOf<String, String>()
 		queryMap.put("name", bridgeName)
-		val wikidata = wikiDataService.queryList(queryMap)
+		val wikidata = sparqlService.queryList(queryMap)
 		return wikidata
 	}
 

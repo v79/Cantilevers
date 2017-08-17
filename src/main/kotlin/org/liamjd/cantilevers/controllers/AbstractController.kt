@@ -5,6 +5,7 @@ import com.github.salomonbrys.kodein.bind
 import com.github.salomonbrys.kodein.provider
 import org.liamjd.cantilevers.services.sparql.SparqlService
 import org.liamjd.cantilevers.services.sparql.WikiDataSparqlService
+import org.liamjd.cantilevers.services.wikidata.WikiDataService
 import org.slf4j.LoggerFactory
 import spark.Request
 import spark.Session
@@ -31,7 +32,8 @@ abstract class AbstractController(path: String) {
 
 	// Service dependency injection
 	open var injectServices = Kodein {
-		bind<SparqlService>("wikidata") with provider { WikiDataSparqlService() }
+		bind<SparqlService>("sparql") with provider { WikiDataSparqlService() }
+		bind<WikiDataService>("wikidata") with provider { WikiDataService() }
 	}
 
 

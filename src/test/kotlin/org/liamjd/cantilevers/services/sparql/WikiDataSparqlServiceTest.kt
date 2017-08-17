@@ -4,7 +4,7 @@ import org.junit.Assert
 import org.junit.Test
 import org.liamjd.cantilevers.viewmodel.Bridge
 
-class WikiDataServiceTest {
+class WikiDataSparqlServiceTest {
 
 	val service = WikiDataSparqlService()
 
@@ -47,12 +47,6 @@ LIMIT 100
 		// verify
 		Assert.assertEquals(expected.trim().replace("\n","").replace("\r",""), result.replace("\n","").replace("\r","").trim())
 
-		val s: String = """
-asda
-"""
-
 	}
-
-
 
 }
