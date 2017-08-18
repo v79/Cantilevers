@@ -100,6 +100,13 @@ public class ThymeleafTemplateEngine extends TemplateEngine {
     public String render(ModelAndView modelAndView) {
         return render(modelAndView, Locale.getDefault());
     }
+    
+    // DRAFT CODE /////////////
+    public String render(ModelAndView modelAndView, String fragment) {
+        Set<String> fragments = new HashSet<String>();
+        framents.add(fragment);
+        render(modelAndView, fragments, Locale.getDefault());
+    }
 
     /**
      * Process the specified template (usually the template name).
@@ -117,6 +124,19 @@ public class ThymeleafTemplateEngine extends TemplateEngine {
             Context context = new Context(locale);
             context.setVariables((Map<String, Object>) model);
             return templateEngine.process(modelAndView.getViewName(), context);
+        } else {
+            throw new IllegalArgumentException("modelAndView.getModel() must return a java.util.Map");
+        }
+    }
+    
+    // DRAFT CODE ////////////////////
+    public String render(ModelAndView modelAndView, Set<String> fragments, Locale locale) {
+          Object model = modelAndView.getModel();
+
+        if (model instanceof Map) {
+            Context context = new Context(locale);
+            context.setVariables((Map<String, Object>) model);
+            return templateEngine.process(modelAndView.getViewName(), fragments, context);
         } else {
             throw new IllegalArgumentException("modelAndView.getModel() must return a java.util.Map");
         }
