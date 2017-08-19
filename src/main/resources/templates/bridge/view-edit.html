@@ -44,14 +44,56 @@
 		</form>
 	</div>
 
+	<!-- search results list -->
 	<div class="row">
 		<div class="col s12" id="results">
-			<div th:replace="~{bridge/fragments/search-edit-results :: results}"/>
 			<div class="progress">
 				<div class="indeterminate"></div>
 			</div>
 		</div>
+		<div th:if="${results !=null}" th:fragment="results">
+			<form id="results-preview">
+				<div class="row">
+					<div class="col s12">
+						<ul class="collapsible" data-collapsible="accordion">
+							<li th:each="bridge : ${results}">
+								<div class="collapsible-header"><span th:text="${bridge}">Bridge information</span>
+									<div class="secondary-content">
+										<a href="#" th:onclick="'expand(\'' + ${bridge.wikiDataID} + '\',
+									\'' + ${bridgeStat.index} + '\');'">
+											<i class="material-icons bridgeCollapsibleArrow" th:id="|expandArrow_${bridgeStat.index}|">expand_more</i>
+										</a>
+										<input type="radio" name="bridgeGroup" th:id="|radio_${bridge.wikiDataID}|"/>
+										<label th:for="|radio_${bridge.wikiDataID}|">&nbsp;</label>
+									</div>
+								</div>
+								<div th:id="|col_${bridge.wikiDataID}|" class="collapsible-body">More bridge details
+									<!-- bridge preview -->
+									<div th:if="${bridgePreview != null}" th:fragment="preview">
+										<ul>
+											<li th:each="statement : ${bridgePreview}">
+												<span th:text="${statement.key}">Statement</span> <span th:text="${statement.value}" class="teal-text lighten-4">Value</span>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col s3 input-field offset-s9">
+						<div class="btn waves-effect waves-light teal darken-1"><i
+								class="material-icons right">check</i>Choose
+						</div>
+					</div>
+				</div>
+			</form>
+		</div>
 	</div>
+
+
+
 
 
 </div>

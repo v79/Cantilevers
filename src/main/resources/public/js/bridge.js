@@ -24,7 +24,7 @@ function triggerSearch() {
     data: serializedData,
     success: function(response, statusText, xhr) {
         $('#results').html(response);
-          $('#bridge-name-heading').html(bridgeName);
+        $('#bridge-name-heading').html(bridgeName);
     }
   });
 }

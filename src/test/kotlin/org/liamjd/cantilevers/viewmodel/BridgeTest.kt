@@ -15,6 +15,7 @@ class BridgeTest {
 		val name: String = "Tay Rail Bridge"
 		val coords: String = "Point(-2.988444444 56.437333333)"
 		val length: Int = 1234
+		val desc: String = "A bridge over the River Tay"
 		private val wikidatajsonurl = URL("https://www.wikidata.org/wiki/Special:EntityData/" + wikiDataID + ".json")
 		val wikiDataJSON: String? = wikidatajsonurl.readText()
 //		val lastModifiedDate: LocalDate = LocalDate.parse("2017-03-20T20:39:57Z", DateTimeFormatter.ISO_INSTANT)
@@ -24,7 +25,7 @@ class BridgeTest {
 	@Test
 	fun `should build string for basic values`() {
 		// setup
-		var bridge: Bridge = Bridge(name = TayBridge.name, wikiDataID = TayBridge.wikiDataID, coords = TayBridge.coords, length = TayBridge.length, wikiDataJSON = null)
+		var bridge: Bridge = Bridge(name = TayBridge.name, wikiDataID = TayBridge.wikiDataID, coords = TayBridge.coords, description = TayBridge.desc, length = TayBridge.length, wikiDataJSON = null)
 		val expected: String = """Tay Rail Bridge, 1234m, at Point(-2.988444444 56.437333333), (Q6480690)"""
 		// execute
 		val result = bridge.toString()
@@ -36,7 +37,7 @@ class BridgeTest {
 	@Test
 	fun `random tests to see outputs`() {
 		// setup
-		var bridge: Bridge = Bridge(name = TayBridge.name, wikiDataID = TayBridge.wikiDataID, coords = TayBridge.coords, length = TayBridge.length, wikiDataJSON = TayBridge.wikiDataJSON)
+		var bridge: Bridge = Bridge(name = TayBridge.name, wikiDataID = TayBridge.wikiDataID, coords = TayBridge.coords, description = TayBridge.desc,length = TayBridge.length, wikiDataJSON = TayBridge.wikiDataJSON)
 
 		// execute
 		val json = bridge.json
@@ -54,7 +55,7 @@ class BridgeTest {
 	fun `should extract date as LocalDate object`() {
 		// setup
 		val dateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy MM dd")
-		var bridge: Bridge = Bridge(name = TayBridge.name, wikiDataID = TayBridge.wikiDataID, coords = TayBridge.coords, length = TayBridge.length, wikiDataJSON = TayBridge.wikiDataJSON)
+		var bridge: Bridge = Bridge(name = TayBridge.name, wikiDataID = TayBridge.wikiDataID, coords = TayBridge.coords, description = TayBridge.desc, length = TayBridge.length, wikiDataJSON = TayBridge.wikiDataJSON)
 		val expectedDate: LocalDate = LocalDate.parse("2017 03 20", dateFormat)
 
 		// execute

@@ -18,6 +18,7 @@ class BridgeController: AbstractController("/bridge") {
 	val sparqlService: SparqlService
 	val wikiDataService: WikiDataService
 	var suggestions: List<Bridge> = mutableListOf()
+	val viewPath = "bridge/view-edit"
 
 	init {
 		sparqlService = injectServices.instance("sparql")
@@ -26,9 +27,11 @@ class BridgeController: AbstractController("/bridge") {
 		get(path) {
 			"Shouldn't be here - TODO"
 		}
+
 		get(path + "/search") {
 			model.put("title", "Choose Bridge | Cantilevers Bridge Database")
-			engine.render(ModelAndView(model, "bridge/view-edit"))
+			model.remove("results")
+			engine.render(ModelAndView(model, viewPath))
 		}
 
 		Spark.path(path + "/ajax") {
@@ -41,29 +44,24 @@ class BridgeController: AbstractController("/bridge") {
 				if(bridgeName == null) {
 					bridgeName = model["bridgeName"] as String
 				}
+				model.remove("results")
 				suggestions = getWikidataSuggestions(bridgeName)
 				model.put("results",suggestions)
 
-				engine.render(ModelAndView(model,"bridge/fragments/search-edit-results"))
+				engine.render(ModelAndView(model, viewPath),"results")
 			}
 
 			get("/getPreview") {
 				val wikiDataID: String? = request.queryParams("wikiDataID")
 				wikiDataID?.let {
-					// TODO: cache these somewhere
 					val bridgePreviewStatements = wikiDataService.getStatementsForDocument(wikiDataID)
-					val previewBuilder = StringBuilder()
+					val simplePreview: MutableMap<String,String> = mutableMapOf()
 					bridgePreviewStatements.forEach {
-						previewBuilder.append(wikiDataService.getPropertyLabel(it.key,"en-gb")).appendln(": ")
-						previewBuilder.append(it.value.toString())
+						simplePreview.put(wikiDataService.getPropertyLabel(it.key,"en-gb"),it.value.toString() )
 					}
-					model.put("preview",previewBuilder.toString())
-
+					model.put("bridgePreview",simplePreview)
 				}
-
-//				val previewBridge = suggestions.find { it.wikiDataID == wikiDataID }
-//				model.put("preview",previewBridge?.wikiDataJSON.toString().substring(0,100))
-				engine.render(ModelAndView(model,"bridge/fragments/preview"))
+				engine.render(ModelAndView(model, viewPath),"preview")
 			}
 
 		}
