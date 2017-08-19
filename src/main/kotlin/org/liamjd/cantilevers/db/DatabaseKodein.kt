@@ -7,7 +7,7 @@ import java.net.URI
 val dbModule = Kodein.Module {
 
 	if (System.getenv("DATABASE_URL") != null) {
-		// jdbc:postgresql://ec2-79-125-118-221.eu-west-1.compute.amazonaws.com:5432/dcci0ig3ehbqud?user=wnqtuvuspzaqzs&password=8baeae3bb483fb98b0d645b1cf6d3cb98f8021bb6a324e0c7f8a0eb91360a56c&sslmode=require
+		// postgres://nsfwlpttpycjqw:9caa426fd424aa3c947562468cbeeb37fa7b340bfc846acaf17c379bcbc4a653@ec2-46-137-97-169.eu-west-1.compute.amazonaws.com:5432/d8o5ibnkc198og
 		val dbUri = URI(System.getenv("DATABASE_URL"))
 
 		val jdbcUsername = dbUri.userInfo.split(":")[0]
