@@ -165,7 +165,7 @@ class WikiDataService : AbstractService() {
 
 //		val text = propNameCache.get(cacheKey)
 		if(text != null) {
-			logger.debug("pCache hit $propertyKey:$lang")
+			logger.info("pCache hit $propertyKey:$lang")
 			return text
 		}
 
@@ -174,11 +174,13 @@ class WikiDataService : AbstractService() {
 		if(propertyDoc.labels[lang] != null) {
 			val text: String? = propertyDoc.labels[lang]?.text
 			propertyCacheDao.add("$propertyKey:$lang", text!!)
+			logger.info("Caching property $propertyKey:$lang to database")
 //			propNameCache.put("$propertyKey:$lang",text!!)
 			return text!!
 		} else if (propertyDoc.labels[defaultLanguage] != null) {
 			val text: String? = propertyDoc.labels[defaultLanguage]?.text
 			propertyCacheDao.add("$propertyKey:$lang", text!!)
+			logger.info("Caching property $propertyKey:$lang to database")
 //			propNameCache.put("$propertyKey:$lang",text!!)
 			return text!!
 		} else {
