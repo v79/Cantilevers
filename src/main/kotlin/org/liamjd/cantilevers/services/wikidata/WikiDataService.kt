@@ -1,6 +1,8 @@
 package org.liamjd.cantilevers.services.wikidata
 
-import org.slf4j.LoggerFactory
+import com.github.salomonbrys.kodein.instance
+import org.liamjd.cantilevers.db.caches.PropertyCacheDao
+import org.liamjd.cantilevers.services.AbstractService
 import org.wikidata.wdtk.datamodel.interfaces.EntityDocument
 import org.wikidata.wdtk.datamodel.interfaces.ItemDocument
 import org.wikidata.wdtk.datamodel.interfaces.Statement
@@ -40,10 +42,9 @@ class WikiDataTime(val value: LocalDateTime) : WikiDataResult {
 }
 
 
-class WikiDataService {
+class WikiDataService : AbstractService() {
 
-	val logger = LoggerFactory.getLogger(WikiDataService::class.java)
-
+	val propertyCacheDao = injectCache.instance<PropertyCacheDao>()
 	// TODO: put these in a proper cache, or on the DB
 	val propNameCache: MutableMap<String,String> = mutableMapOf()
 	val valueCache: MutableMap<String,String> = mutableMapOf()
@@ -77,24 +78,10 @@ class WikiDataService {
 				val propertyId = s.claim.mainSnak.propertyId.id
 				when(value) {
 					is JacksonValueString -> {
-						val langMap: I18nLabel = mutableMapOf()
-						langMap.put(language, value.string)
-						if(claimMap.containsKey(propertyId)) {
-							val set: WikiDataStrings = claimMap[propertyId] as WikiDataStrings
-							set.value.add(langMap)
-						} else {
-							claimMap.put(propertyId, WikiDataStrings(mutableSetOf<I18nLabel>(langMap)))
-						}
+						extractStringValue(language, value, claimMap, propertyId)
 					}
 					is JacksonValueItemId -> {
-						val langMap: I18nLabel = mutableMapOf()
-						langMap.put(language,getValueIdLabel(value as JacksonValueItemId,language))
-						if(claimMap.containsKey(propertyId)) {
-							val set: WikiDataStrings = claimMap[propertyId] as WikiDataStrings
-							set.value.add(langMap)
-						} else {
-							claimMap.put(propertyId, WikiDataStrings(mutableSetOf<I18nLabel>(langMap)))
-						}
+						extractIdValue(language, value, claimMap, propertyId)
 					}
 					is JacksonValueQuantity -> {
 
@@ -104,7 +91,6 @@ class WikiDataService {
 					}
 					is JacksonValueGlobeCoordinates -> {
 						// TODO: does it really make sense for coordinates to be strings, or have languages
-
 					}
 					// etc
 				}
@@ -112,9 +98,35 @@ class WikiDataService {
 		} else {
 			// wrong type of document; failure
 		}
-
 		return claimMap
+	}
 
+	/**
+	 * Extract a string and store it on the claim map
+	 */
+	private fun extractStringValue(language: String, value: JacksonValueString, claimMap: MutableMap<QCode, WikiDataResult>, propertyId: String) {
+		val langMap: I18nLabel = mutableMapOf()
+		langMap.put(language, value.string)
+		if (claimMap.containsKey(propertyId)) {
+			val set: WikiDataStrings = claimMap[propertyId] as WikiDataStrings
+			set.value.add(langMap)
+		} else {
+			claimMap.put(propertyId, WikiDataStrings(mutableSetOf<I18nLabel>(langMap)))
+		}
+	}
+
+	/**
+	 * Extract a wikidata item and store its label on the claim map
+	 */
+	private fun extractIdValue(language: String, value: JacksonValue, claimMap: MutableMap<QCode, WikiDataResult>, propertyId: String) {
+		val langMap: I18nLabel = mutableMapOf()
+		langMap.put(language, getValueIdLabel(value as JacksonValueItemId, language))
+		if (claimMap.containsKey(propertyId)) {
+			val set: WikiDataStrings = claimMap[propertyId] as WikiDataStrings
+			set.value.add(langMap)
+		} else {
+			claimMap.put(propertyId, WikiDataStrings(mutableSetOf<I18nLabel>(langMap)))
+		}
 	}
 
 	fun getValueIdLabel(valueItemId: JacksonValueItemId, lang: String): String {
@@ -148,7 +160,10 @@ class WikiDataService {
 
 	fun getPropertyLabel(propertyKey: String, lang: String): String {
 		val cacheKey = "$propertyKey:$lang"
-		val text = propNameCache.get(cacheKey)
+
+		val text = propertyCacheDao.getText(cacheKey)
+
+//		val text = propNameCache.get(cacheKey)
 		if(text != null) {
 			logger.debug("pCache hit $propertyKey:$lang")
 			return text
@@ -158,11 +173,13 @@ class WikiDataService {
 		val propertyDoc = fetcher.getEntityDocument(propertyKey) as JacksonPropertyDocument
 		if(propertyDoc.labels[lang] != null) {
 			val text: String? = propertyDoc.labels[lang]?.text
-			propNameCache.put("$propertyKey:$lang",text!!)
+			propertyCacheDao.add("$propertyKey:$lang", text!!)
+//			propNameCache.put("$propertyKey:$lang",text!!)
 			return text!!
 		} else if (propertyDoc.labels[defaultLanguage] != null) {
 			val text: String? = propertyDoc.labels[defaultLanguage]?.text
-			propNameCache.put("$propertyKey:$lang",text!!)
+			propertyCacheDao.add("$propertyKey:$lang", text!!)
+//			propNameCache.put("$propertyKey:$lang",text!!)
 			return text!!
 		} else {
 			return propertyDoc.datatype.toString()

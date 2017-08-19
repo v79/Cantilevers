@@ -30,7 +30,7 @@ abstract class AbstractController(path: String) {
 	val controllerHome: String = path + "/"
 	val model: MutableMap<String, Any> = hashMapOf<String, Any>()
 
-	// Service dependency injection
+	// AbstractService dependency injection
 	open var injectServices = Kodein {
 		bind<SparqlService>("sparql") with provider { WikiDataSparqlService() }
 		bind<WikiDataService>("wikidata") with provider { WikiDataService() }
