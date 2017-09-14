@@ -11,7 +11,6 @@ $(document).ready(function() {
     triggerSearch();
 
 
-
 }); // end of document ready
 
 function triggerSearch() {
@@ -42,12 +41,20 @@ function showBridgePreview(wikiDataID) {
     });
 }
 
+
 function expand(wikiDataID, rowNum) {
     var activeHeader = $('.collapsible-header');
-    if(activeHeader.hasClass('active')) {
+    var rowClicked = activeHeader[rowNum];
+    var rowClickedIsActive = rowClicked.classList.contains('active');
+
+    if(rowClickedIsActive) {
         $('#expandArrow_' + rowNum).html('expand_more');
         $('.collapsible').collapsible('close',rowNum);
     } else {
+        var len = activeHeader.length;
+        for(i = 0; i < len; i++) {
+          $('.collapsible').collapsible('close',i);
+        }
         var preview = { "wikiDataID": wikiDataID};
            $.ajax({
                url: 'ajax/getPreview',

@@ -60,7 +60,7 @@
 								<div class="collapsible-header"><span th:text="${bridge}">Bridge information</span>
 									<div class="secondary-content">
 										<a href="#" th:onclick="'expand(\'' + ${bridge.wikiDataID} + '\',
-									\'' + ${bridgeStat.index} + '\');'">
+											\'' + ${bridgeStat.index} + '\');'">
 											<i class="material-icons bridgeCollapsibleArrow" th:id="|expandArrow_${bridgeStat.index}|">expand_more</i>
 										</a>
 										<input type="radio" name="bridgeGroup" th:id="|radio_${bridge.wikiDataID}|"/>

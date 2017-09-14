@@ -5,16 +5,14 @@
 
 		<div class="row">
 			<div class="col s12">
-				<p><strong>POOOOOOOOOOOOOOOOOOOOOOOOOOO
-				</strong></p>
 				<ul class="collapsible" data-collapsible="accordion">
 					<li th:each="bridge : ${results}">
 						<div class="collapsible-header"><span th:text="${bridge}">Bridge information</span>
 							<div class="secondary-content">
-								<a href="#" th:onclick="'expand(\'' + ${bridge.wikiDataID} + '\',
+					<!--			<a href="#" th:onclick="'expand(\'' + ${bridge.wikiDataID} + '\',
 									\'' + ${bridgeStat.index} + '\');'">
 									<i class="material-icons bridgeCollapsibleArrow" th:id="|expandArrow_${bridgeStat.index}|">expand_more</i>
-								</a>
+								</a>-->
 								<input type="radio" name="bridgeGroup" th:id="|radio_${bridge.wikiDataID}|"/>
 								<label th:for="|radio_${bridge.wikiDataID}|">&nbsp;</label>
 							</div>
