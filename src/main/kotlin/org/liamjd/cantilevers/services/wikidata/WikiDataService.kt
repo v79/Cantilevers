@@ -9,11 +9,14 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonPropertyDocument
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.*
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher
-import java.time.LocalDateTime
+import java.time.Month
+import java.time.format.TextStyle
+import java.util.*
 
 typealias QCode = String
 typealias I18nLabel = MutableMap<String,String>
-typealias Coordinates = Pair<Float,Float>
+typealias Coordinates = Pair<Double,Double>
+
 
 interface WikiDataResult {
 	override fun toString(): String
@@ -32,12 +35,27 @@ class WikiDataStrings(val value: MutableSet<I18nLabel>) : WikiDataResult {
 }
 class WikiDataCoords(val value: Coordinates) : WikiDataResult {
 	override fun toString(): String {
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+		return "(${value.first},${value.second})"
 	}
 }
-class WikiDataTime(val value: LocalDateTime) : WikiDataResult {
+
+// TODO: this is really ugly
+class WikiDataTime(val wikiTimeValue: JacksonValueTime, val year: Long?, val month: Month?, val day: Int? ) : WikiDataResult {
 	override fun toString(): String {
-		TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+		// TODO: make this much much cleverer and formatted
+		val sb = StringBuilder()
+		if(day != null) {
+			sb.append(day).append(" ")
+		}
+		if(month != null) {
+			sb.append(month.getDisplayName(TextStyle.FULL, Locale.UK)).append(" ")
+		}
+		if(year != null) {
+			sb.append(year)
+		}
+		sb.append(" [$wikiTimeValue]")
+
+		return sb.toString()
 	}
 }
 
@@ -87,9 +105,10 @@ class WikiDataService : AbstractService() {
 
 					}
 					is JacksonValueTime -> {
-
+						extractTimeValue(value,claimMap,propertyId)
 					}
 					is JacksonValueGlobeCoordinates -> {
+						extractCoordinateValue(value,claimMap,propertyId)
 						// TODO: does it really make sense for coordinates to be strings, or have languages
 					}
 					// etc
@@ -99,6 +118,46 @@ class WikiDataService : AbstractService() {
 			// wrong type of document; failure
 		}
 		return claimMap
+	}
+
+	/**
+	 * The JacksonValueTime class from WikiData doesn't neatly map on to a Java Date or LocalTime, as it can represent pretty vague concepts like 1800 +- 2 years", or "186million years ago"
+	 * I think we will store the JacksonValueTime as-is, and separately store day/month/year where possible as it better matches our dataset.
+	 * Haven't decided how to store this in the DB!
+	 */
+	// TODO: this is all really ugly
+	private fun extractTimeValue(value: JacksonValueTime, claimMap: MutableMap<QCode, WikiDataResult>, propertyId: String) {
+		val zeroByte: Byte = 0
+		var year: Long?
+		var month: Month?
+		var day: Int?
+		// undefined days and months etc are stored as 0 in the JacksonValueTime.InnerTime object
+		if(value.value.year.equals(0)) {
+			year = null
+		} else {
+			year = value.value.year
+		}
+		if( value.value.month.equals(zeroByte)) {
+			month = null
+		} else {
+			month = Month.of(value.value.month.toInt())
+		}
+		if(value.value.day.equals(zeroByte)) {
+			day = null
+		} else {
+			day = value.value.day.toInt()
+		}
+		val date = WikiDataTime(value,year, month, day)
+		claimMap.put(propertyId,date)
+	}
+
+	private fun extractCoordinateValue(value: JacksonValueGlobeCoordinates, claimMap: MutableMap<QCode, WikiDataResult>, propertyId: String) {
+		if(claimMap.containsKey(propertyId)) {
+			// can't remember what this is for; I don't think it applies to languageless properties
+		} else {
+			val coords: Coordinates = Coordinates(value.latitude,value.longitude)
+			claimMap.put(propertyId,WikiDataCoords(coords))
+		}
 	}
 
 	/**
