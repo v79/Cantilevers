@@ -144,7 +144,7 @@ class WikiDataService : AbstractService() {
 		val convertedFileName = fileName.replace(' ','_')
 		val digest = MessageDigest.getInstance("MD5")
 		val md5Bytes = digest.digest(convertedFileName.toByteArray())
-		val hex: String = (HexBinaryAdapter()).marshal(md5Bytes)
+		val hex: String = (HexBinaryAdapter()).marshal(md5Bytes).toLowerCase()
 		val a = hex.substring(0,1)
 		val ab = hex.substring(0,2)
 		val url = "https://upload.wikimedia.org/wikipedia/commons/$a/$ab/$convertedFileName"
