@@ -9,6 +9,7 @@ import org.wikidata.wdtk.datamodel.interfaces.Statement
 import org.wikidata.wdtk.datamodel.json.jackson.JacksonPropertyDocument
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.*
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher
+import java.math.BigDecimal
 import java.time.Month
 import java.time.format.TextStyle
 import java.util.*
@@ -22,7 +23,7 @@ interface WikiDataResult {
 	override fun toString(): String
 }
 
-class WikiDataStrings(val value: MutableSet<I18nLabel>) : WikiDataResult {
+data class WikiDataStrings(val value: MutableSet<I18nLabel>) : WikiDataResult {
 	override fun toString(): String {
 		val sb = StringBuilder()
 		value.forEach {
@@ -33,14 +34,14 @@ class WikiDataStrings(val value: MutableSet<I18nLabel>) : WikiDataResult {
 		return sb.toString()
 	}
 }
-class WikiDataCoords(val value: Coordinates) : WikiDataResult {
+data class WikiDataCoords(val value: Coordinates) : WikiDataResult {
 	override fun toString(): String {
 		return "(${value.first},${value.second})"
 	}
 }
 
 // TODO: this is really ugly
-class WikiDataTime(val wikiTimeValue: JacksonValueTime, val year: Long?, val month: Month?, val day: Int? ) : WikiDataResult {
+data class WikiDataTime(val wikiTimeValue: JacksonValueTime, val year: Long?, val month: Month?, val day: Int? ) : WikiDataResult {
 	override fun toString(): String {
 		// TODO: make this much much cleverer and formatted
 		val sb = StringBuilder()
@@ -57,6 +58,10 @@ class WikiDataTime(val wikiTimeValue: JacksonValueTime, val year: Long?, val mon
 
 		return sb.toString()
 	}
+}
+
+data class WikiDataQuantity(val value: BigDecimal, val units: String) : WikiDataResult {
+
 }
 
 
@@ -102,14 +107,14 @@ class WikiDataService : AbstractService() {
 						extractIdValue(language, value, claimMap, propertyId)
 					}
 					is JacksonValueQuantity -> {
-
+//						extractQuantityValue(language, value, claimMap, propertyId)
 					}
 					is JacksonValueTime -> {
 						extractTimeValue(value,claimMap,propertyId)
 					}
 					is JacksonValueGlobeCoordinates -> {
-						extractCoordinateValue(value,claimMap,propertyId)
 						// TODO: does it really make sense for coordinates to be strings, or have languages
+						extractCoordinateValue(value,claimMap,propertyId)
 					}
 					// etc
 				}
@@ -119,6 +124,7 @@ class WikiDataService : AbstractService() {
 		}
 		return claimMap
 	}
+
 
 	/**
 	 * The JacksonValueTime class from WikiData doesn't neatly map on to a Java Date or LocalTime, as it can represent pretty vague concepts like 1800 +- 2 years", or "186million years ago"
@@ -188,6 +194,17 @@ class WikiDataService : AbstractService() {
 		}
 	}
 
+	// TODO: these are a bugger to extract because the units (miles, pence etc) are WikiData entities in themselves
+	private fun extractQuantityValue(language: String, value: JacksonValueQuantity, claimMap: MutableMap<QCode, WikiDataResult>, propertyId: String) {
+		val amount = value.value.amount
+//		val unitKey = value.value.unit.(regex = Regex("(Q[0-9]*)\$"))
+		val unitKey = value.value.unit.substring(value.value.unit.lastIndexOf('Q'))
+		var jacksonValueItemId: JacksonValueItemId = JacksonValueItemId()
+//		jacksonValueItemId.id = unitKey
+//		val units = getValueIdLabel(unitKey,language)
+//		claimMap.put(propertyId,WikiDataQuantity(amount, units))
+	}
+
 	fun getValueIdLabel(valueItemId: JacksonValueItemId, lang: String): String {
 		val cacheKey = "${valueItemId.id}:$lang"
 		if(valueCache.containsKey(cacheKey)) {
@@ -195,7 +212,7 @@ class WikiDataService : AbstractService() {
 				logger.debug("vCache hit $it")
 				return it}
 		}
-		logger.info("fetching $cacheKey from WikiData")
+		logger.info("fetching item $cacheKey from WikiData")
 		val itemDocument = fetcher.getEntityDocument(valueItemId.id) as ItemDocument
 		if(itemDocument.labels.get(lang) != null) {
 			// TODO: cache all this
@@ -228,20 +245,20 @@ class WikiDataService : AbstractService() {
 			return text
 		}
 
-		logger.info("fetching $cacheKey from WikiData")
+		logger.info("fetching property $cacheKey from WikiData")
 		val propertyDoc = fetcher.getEntityDocument(propertyKey) as JacksonPropertyDocument
 		if(propertyDoc.labels[lang] != null) {
 			val text: String? = propertyDoc.labels[lang]?.text
 			propertyCacheDao.add("$propertyKey:$lang", text!!)
 			logger.info("Caching property $propertyKey:$lang to database")
 //			propNameCache.put("$propertyKey:$lang",text!!)
-			return text!!
+			return text
 		} else if (propertyDoc.labels[defaultLanguage] != null) {
 			val text: String? = propertyDoc.labels[defaultLanguage]?.text
 			propertyCacheDao.add("$propertyKey:$lang", text!!)
 			logger.info("Caching property $propertyKey:$lang to database")
 //			propNameCache.put("$propertyKey:$lang",text!!)
-			return text!!
+			return text
 		} else {
 			return propertyDoc.datatype.toString()
 		}
