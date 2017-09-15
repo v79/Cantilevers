@@ -10,9 +10,11 @@ import org.wikidata.wdtk.datamodel.json.jackson.JacksonPropertyDocument
 import org.wikidata.wdtk.datamodel.json.jackson.datavalues.*
 import org.wikidata.wdtk.wikibaseapi.WikibaseDataFetcher
 import java.math.BigDecimal
+import java.security.MessageDigest
 import java.time.Month
 import java.time.format.TextStyle
 import java.util.*
+import javax.xml.bind.annotation.adapters.HexBinaryAdapter
 
 typealias QCode = String
 typealias I18nLabel = MutableMap<String,String>
@@ -64,6 +66,8 @@ data class WikiDataQuantity(val value: BigDecimal, val units: String) : WikiData
 
 }
 
+data class WikiMediaImage(val url: String) : WikiDataResult
+
 
 class WikiDataService : AbstractService() {
 
@@ -99,24 +103,30 @@ class WikiDataService : AbstractService() {
 				val s: Statement = statements.next()
 				val value: JacksonValue = s.claim.value as JacksonValue
 				val propertyId = s.claim.mainSnak.propertyId.id
-				when(value) {
-					is JacksonValueString -> {
-						extractStringValue(language, value, claimMap, propertyId)
-					}
-					is JacksonValueItemId -> {
-						extractIdValue(language, value, claimMap, propertyId)
-					}
-					is JacksonValueQuantity -> {
+				// special case for images
+				if (propertyId.equals("P18")) {
+					logger.info("P18 Image found: " + value)
+					extractWikimediaImageUrl(value as JacksonValueString, claimMap, propertyId)
+				} else {
+					when (value) {
+						is JacksonValueString -> {
+							extractStringValue(language, value, claimMap, propertyId)
+						}
+						is JacksonValueItemId -> {
+							extractIdValue(language, value, claimMap, propertyId)
+						}
+						is JacksonValueQuantity -> {
 //						extractQuantityValue(language, value, claimMap, propertyId)
-					}
-					is JacksonValueTime -> {
-						extractTimeValue(value,claimMap,propertyId)
-					}
-					is JacksonValueGlobeCoordinates -> {
-						// TODO: does it really make sense for coordinates to be strings, or have languages
-						extractCoordinateValue(value,claimMap,propertyId)
-					}
+						}
+						is JacksonValueTime -> {
+							extractTimeValue(value, claimMap, propertyId)
+						}
+						is JacksonValueGlobeCoordinates -> {
+							// TODO: does it really make sense for coordinates to be strings, or have languages
+							extractCoordinateValue(value, claimMap, propertyId)
+						}
 					// etc
+					}
 				}
 			}
 		} else {
@@ -125,6 +135,22 @@ class WikiDataService : AbstractService() {
 		return claimMap
 	}
 
+	private fun extractWikimediaImageUrl(value: JacksonValueString, claimMap: MutableMap<QCode, WikiDataResult>, propertyId: String) {
+		val fileName: String = value.value
+		// the final URL is in the format https://upload.wikimedia.org/wikipedia/commons/a/ab/image_name.ext
+		// where image_name.ext is the fileName with spaces replaced with _
+		// a is the first digit of the md5sum of the converted fileName
+		// b is the second digit of the md5sum of the converted fileName
+		val convertedFileName = fileName.replace(' ','_')
+		val digest = MessageDigest.getInstance("MD5")
+		val md5Bytes = digest.digest(convertedFileName.toByteArray())
+		val hex: String = (HexBinaryAdapter()).marshal(md5Bytes)
+		val a = hex.substring(0,1)
+		val ab = hex.substring(0,2)
+		val url = "https://upload.wikimedia.org/wikipedia/commons/$a/$ab/$convertedFileName"
+		logger.info("Image URL is $url")
+		claimMap.put(propertyId,WikiMediaImage(url))
+	}
 
 	/**
 	 * The JacksonValueTime class from WikiData doesn't neatly map on to a Java Date or LocalTime, as it can represent pretty vague concepts like 1800 +- 2 years", or "186million years ago"

@@ -56,6 +56,9 @@ class BridgeController: AbstractController("/bridge") {
 					val simplePreview: MutableMap<String,String> = mutableMapOf()
 					bridgePreviewStatements.forEach {
 						simplePreview.put(wikiDataService.getPropertyLabel(it.key,"en-gb"),it.value.toString() )
+						if(it.key.equals("P18")) {
+							model.put("imageUrl", it.value)
+						}
 					}
 					model.put("bridgePreview",simplePreview)
 				}
