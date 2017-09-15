@@ -1,7 +1,5 @@
 package org.liamjd.cantilevers.controllers
 
-import com.beust.klaxon.JsonObject
-import com.beust.klaxon.Parser
 import com.github.salomonbrys.kodein.instance
 import org.liamjd.cantilevers.annotations.SparkController
 import org.liamjd.cantilevers.services.sparql.SparqlService
@@ -74,15 +72,4 @@ class BridgeController: AbstractController("/bridge") {
 		return wikidata
 	}
 
-	private fun getPreviewHTML(wikiDataID: String): String {
-		val stringBuilder: StringBuilder = StringBuilder()
-		val outputBuilder: StringBuilder = StringBuilder()
-
-		val parser: Parser = Parser()
-		stringBuilder.append(wikiDataID)
-		val json: JsonObject = parser.parse(stringBuilder) as JsonObject
-		outputBuilder.append(json.toJsonString(true))
-		outputBuilder.append("""<br/><a href="#">Close</a>""")
-		return outputBuilder.toString()
-	}
 }
