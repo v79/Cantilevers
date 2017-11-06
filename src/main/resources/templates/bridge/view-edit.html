@@ -75,6 +75,9 @@
 												<span th:text="${statement.key}">Statement</span> <span th:text="${statement.value}" class="teal-text lighten-4">Value</span>
 											</li>
 										</ul>
+										<span class="previewImage" th:if="${imageUrl != null}">
+											<img th:src="${imageUrl}" width="150px"/>
+										</span>
 									</div>
 								</div>
 							</li>

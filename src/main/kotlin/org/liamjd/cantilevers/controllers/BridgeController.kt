@@ -4,6 +4,7 @@ import com.github.salomonbrys.kodein.instance
 import org.liamjd.cantilevers.annotations.SparkController
 import org.liamjd.cantilevers.services.sparql.SparqlService
 import org.liamjd.cantilevers.services.wikidata.WikiDataService
+import org.liamjd.cantilevers.services.wikidata.WikiMediaImage
 import org.liamjd.cantilevers.viewmodel.Bridge
 import spark.ModelAndView
 import spark.Spark
@@ -50,6 +51,7 @@ class BridgeController: AbstractController("/bridge") {
 			}
 
 			get("/getPreview") {
+				model.remove("imageUrl")
 				val wikiDataID: String? = request.queryParams("wikiDataID")
 				wikiDataID?.let {
 					val bridgePreviewStatements = wikiDataService.getStatementsForDocument(wikiDataID)
@@ -57,7 +59,8 @@ class BridgeController: AbstractController("/bridge") {
 					bridgePreviewStatements.forEach {
 						simplePreview.put(wikiDataService.getPropertyLabel(it.key,"en-gb"),it.value.toString() )
 						if(it.key.equals("P18")) {
-							model.put("imageUrl", it.value)
+							val image  = it.value as WikiMediaImage
+							model.put("imageUrl", image.url)
 						}
 					}
 					model.put("bridgePreview",simplePreview)

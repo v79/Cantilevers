@@ -1,10 +1,21 @@
 <!DOCTYPE html>
+<!-- OBSOLETE -->
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <div class="row" th:fragment="bridge-preview" xmlns:th="http://www.thymeleaf.org">
 	<div class="col s12 m8">
 		<div class="card">
 			<div class="card-content">
-	          <span th:text="${preview}">Bridge preview information
-	          </span>
+				<span th:text="${preview}">Bridge preview information</span>
+				<img src="${imageUrl}" alt="${imageUrl}" title="${imageUrl}"/>
+
+
+				<hr/>
+				<table class="orange-text text-orange-darken-4">
+					<tr th:each="var : ${#ctx.getVariableNames()}">
+						<td th:text="${var}"></td>
+						<td th:text="${#vars.getVariable(var)}"></td>
+					</tr>
+				</table>
 			</div>
 		</div>
 	</div>
