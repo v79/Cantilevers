@@ -3,11 +3,12 @@ version '0.0.1-SNAPSHOT'
 
 buildscript {
     // declare some versions
-    ext.kotlin_version = '1.1.4'
+    ext.kotlin_version = '1.1.61'
     ext.spark_kotlin_version = '1.0.0-alpha'
     ext.thymeleaf_version = '3.0.6.RELEASE'
-    ext.kodein_version = '4.0.0'
-    ext.exposed_version = '0.8.7'
+    ext.kodein_version = '4.1.0'
+    ext.exposed_version = '0.9.1'
+    ext.wdtk_version = '0.7.0'
 
     repositories {
         mavenLocal()
@@ -52,7 +53,7 @@ dependencies {
     // json parsing
     compile 'com.beust:klaxon:0.30'
     // wikidata and sparql
-    compile 'org.wikidata.wdtk:wdtk-wikibaseapi:0.7.0'
+    compile group: 'org.wikidata.wdtk', name: 'wdtk-wikibaseapi', version:"$wdtk_version"
 
     // testing
     testCompile 'junit:junit:4.12'
