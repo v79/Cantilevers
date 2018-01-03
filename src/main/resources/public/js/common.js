@@ -23,7 +23,10 @@ function openModal(sparkPath, dataDiv, containerDiv) {
     })
 }
 
-function validateAndRedirect(validatorPath, formName, containerDiv, redirectPath) {
+// Call the validation route given in validatorPath to validate the form in formName.
+// If validation fails, update containerDiv through AJAX.
+// If it succeeds, redirect to the given route
+function validate(validatorPath, formName, containerDiv, redirectPath) {
     var serializedData = $('#' + formName).serialize();
     console.log(serializedData)
     // first, post to validator
@@ -42,6 +45,11 @@ function validateAndRedirect(validatorPath, formName, containerDiv, redirectPath
             }
         }
     });
+}
+
+// Call validation by providing an object to use named parameters
+function validateAndRedirect(params) {
+    validate(params.validator, params.form, params.div, params.success);
 }
 
 function openAddSearchModal() {

@@ -23,9 +23,7 @@ class HomeController : AbstractController(path = "/") {
 				val errorMap = BridgeValidator.validateName(name)
 				if (errorMap.isEmpty()) {
 					logger.info("No errors found")
-					response.status(200)
-					response.body("")
-					flash(request,"bridgeName",name!!)
+					flash( request, response, "bridgeName",name!!)
 				} else {
 					model.put("errors", errorMap)
 					model.put("name",name!!)

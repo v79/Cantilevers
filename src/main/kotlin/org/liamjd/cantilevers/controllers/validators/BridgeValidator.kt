@@ -6,7 +6,7 @@ object BridgeValidator {
 		if (bridgeName == null || bridgeName.isEmpty()) {
 			errors.put("name", "Name must not be blank")
 		} else {
-			if (bridgeName.length < 4 || bridgeName.length > 50) {
+			if (bridgeName.length < 3 || bridgeName.length > 50) {
 				errors.put("name", "Name must be between 3 and 50 characters long")
 			}
 		}

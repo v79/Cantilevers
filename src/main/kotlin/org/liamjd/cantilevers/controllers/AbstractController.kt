@@ -8,6 +8,7 @@ import org.liamjd.cantilevers.services.sparql.WikiDataSparqlService
 import org.liamjd.cantilevers.services.wikidata.WikiDataService
 import org.slf4j.LoggerFactory
 import spark.Request
+import spark.Response
 import spark.Session
 import spark.kotlin.after
 import spark.kotlin.before
@@ -76,9 +77,11 @@ abstract class AbstractController(path: String) {
 
 	}
 
-	fun flash(request: Request, key: String, value: Any) {
+	fun flash(request: Request, response: Response, key: String, value: Any) {
 		val keyValueMap: MutableMap<String, Any> = mutableMapOf<String, Any>()
 		keyValueMap.put(key, value)
+		response.body("")
+		response.status(200) // success
 		request.session().attribute("flash", keyValueMap)
 		request.session().attribute(getFlashKeyCountName(key), 1)
 	}
