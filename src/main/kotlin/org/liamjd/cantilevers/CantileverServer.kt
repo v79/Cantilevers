@@ -11,6 +11,7 @@ import spark.kotlin.staticFiles
 import spark.servlet.SparkApplication
 import java.util.*
 
+
 class CantileverServer : SparkApplication {
 	val logger = LoggerFactory.getLogger(CantileverServer::class.java)
 	val thisPackage = this.javaClass.`package`
@@ -28,8 +29,6 @@ class CantileverServer : SparkApplication {
 			logger.info("Instantiating controller " + it.simpleName)
 			it.newInstance()
 		}
-
-
 
 		displayStartupMessage(portNumber?.toInt())
 	}
