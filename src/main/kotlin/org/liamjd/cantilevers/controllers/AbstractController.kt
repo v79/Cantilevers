@@ -1,11 +1,5 @@
 package org.liamjd.cantilevers.controllers
 
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.bind
-import com.github.salomonbrys.kodein.provider
-import org.liamjd.cantilevers.services.sparql.SparqlService
-import org.liamjd.cantilevers.services.sparql.WikiDataSparqlService
-import org.liamjd.cantilevers.services.wikidata.WikiDataService
 import org.slf4j.LoggerFactory
 import spark.Request
 import spark.Response
@@ -30,13 +24,6 @@ abstract class AbstractController(path: String) {
 	open lateinit var path: String
 	val controllerHome: String = path + "/"
 	val model: MutableMap<String, Any> = hashMapOf<String, Any>()
-
-	// AbstractService dependency injection
-	open var injectServices = Kodein {
-		bind<SparqlService>("sparql") with provider { WikiDataSparqlService() }
-		bind<WikiDataService>("wikidata") with provider { WikiDataService() }
-	}
-
 
 	init {
 		this.path = path
@@ -86,7 +73,7 @@ abstract class AbstractController(path: String) {
 		request.session().attribute(getFlashKeyCountName(key), 1)
 	}
 
-	fun clearFlashForKey(request: Request, key: String) {
+	private fun clearFlashForKey(request: Request, key: String) {
 		val flashAttr: MutableMap<String, Any>? = request.session().attribute("flash")
 		if (flashAttr != null) {
 			if (flashAttr.containsKey(key)) {
