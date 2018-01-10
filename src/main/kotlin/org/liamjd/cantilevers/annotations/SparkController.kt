@@ -5,4 +5,4 @@ package org.liamjd.cantilevers.annotations
  */
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.CLASS)
-annotation class SparkController
+annotation class SparkController(val annoPath: String)

@@ -1,9 +1,6 @@
 package org.liamjd.cantilevers.controllers
 
-import com.github.salomonbrys.kodein.Kodein
-import com.github.salomonbrys.kodein.bind
-import com.github.salomonbrys.kodein.instance
-import com.github.salomonbrys.kodein.provider
+import com.github.salomonbrys.kodein.*
 import org.liamjd.cantilevers.annotations.SparkController
 import org.liamjd.cantilevers.services.sparql.SparqlService
 import org.liamjd.cantilevers.services.sparql.WikiDataSparqlService
@@ -15,7 +12,7 @@ import spark.Spark
 import spark.kotlin.get
 import spark.kotlin.post
 
-@SparkController
+@SparkController("/bridge")
 class BridgeController : AbstractController("/bridge") {
 
 	val sparqlService: SparqlService
@@ -23,7 +20,8 @@ class BridgeController : AbstractController("/bridge") {
 	var suggestions: List<Bridge> = mutableListOf()
 	val viewPath = "bridge/view-edit"
 
-	var injectServices = Kodein {
+	// what's the point in injection like this?
+	val injectServices = Kodein {
 		bind<SparqlService>("sparql") with provider { WikiDataSparqlService() }
 		bind<WikiDataService>("wikidata") with provider { WikiDataService() }
 	}

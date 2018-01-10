@@ -1,5 +1,6 @@
 package org.liamjd.cantilevers.controllers
 
+import com.github.salomonbrys.kodein.Kodein
 import org.slf4j.LoggerFactory
 import spark.Request
 import spark.Response

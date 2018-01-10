@@ -7,8 +7,8 @@ import spark.Spark
 import spark.kotlin.get
 import spark.kotlin.post
 
-@SparkController
-class HomeController : AbstractController(path = "/") {
+@SparkController("home")
+class HomeController(myPath: String) : AbstractController(path = "/") {
 
 	init {
 

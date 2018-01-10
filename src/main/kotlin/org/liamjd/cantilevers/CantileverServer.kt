@@ -1,6 +1,12 @@
 package org.liamjd.cantilevers
 
+import com.github.salomonbrys.kodein.Kodein
+import com.github.salomonbrys.kodein.bind
+import com.github.salomonbrys.kodein.provider
 import org.liamjd.cantilevers.annotations.SparkController
+import org.liamjd.cantilevers.services.sparql.SparqlService
+import org.liamjd.cantilevers.services.sparql.WikiDataSparqlService
+import org.liamjd.cantilevers.services.wikidata.WikiDataService
 import org.reflections.Reflections
 import org.reflections.scanners.MethodAnnotationsScanner
 import org.reflections.scanners.SubTypesScanner
@@ -24,10 +30,25 @@ class CantileverServer : SparkApplication {
 
 		// initialize controllers
 		val reflections = Reflections(thisPackage.name, MethodAnnotationsScanner(), TypeAnnotationsScanner(), SubTypesScanner())
+
 		val controllers = reflections.getTypesAnnotatedWith(SparkController::class.java)
 		controllers.forEach {
-			logger.info("Instantiating controller " + it.simpleName)
-			it.newInstance()
+
+			val sparkAnnotation = it.getAnnotation(org.liamjd.cantilevers.annotations.SparkController::class.java)
+			val path = sparkAnnotation.annoPath
+
+//			for(decAnnot in it.annotations) {
+//				logger.info("\tannotation: " + decAnnot)
+//			}
+			for (c in it.constructors) {
+//				logger.info("\t constructor: " + c)
+				logger.info("Instantiating controller " + it.simpleName + " with path: " + path)
+				val superCons = it.superclass.getConstructor(String::class.java)
+
+//				val cons = it.getConstructor(String::class.java)
+//				cons.newInstance(path)
+			}
+//			it.newInstance()
 		}
 
 		displayStartupMessage(portNumber?.toInt())
@@ -42,7 +63,7 @@ class CantileverServer : SparkApplication {
 		logger.info("Cantilevers Bridge Database Started")
 		logger.info("Date: " + Date().toString())
 		logger.info("OS: " + System.getProperty("os.name"))
-		logger.info("Port: " + portNumber)
+		logger.info("Port: " + if (portNumber != null) portNumber else "4568")
 		logger.info("JDBC URL: " + System.getenv("JDBC_DATABASE_URL"))
 		logger.info("=============================================================")
 	}
