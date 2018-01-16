@@ -42,7 +42,7 @@ class CantileverServer : SparkApplication {
 		logger.info("Cantilevers Bridge Database Started")
 		logger.info("Date: " + Date().toString())
 		logger.info("OS: " + System.getProperty("os.name"))
-		logger.info("Port: " + portNumber)
+		logger.info("Port: " + if (portNumber != null) portNumber else "4568")
 		logger.info("JDBC URL: " + System.getenv("JDBC_DATABASE_URL"))
 		logger.info("=============================================================")
 	}
