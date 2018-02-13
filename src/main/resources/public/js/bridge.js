@@ -28,18 +28,19 @@ function triggerSearch() {
   });
 }
 
-function showBridgePreview(wikiDataID) {
-    var preview = { "wikiDataID": wikiDataID};
-    $.ajax({
-        url: 'ajax/getPreview',
-        method: 'get',
-        data: preview,
-        success: function(response, statusText, xhr) {
-            $('#preview').html(response);
-            $('#preview').show();
-        }
-    });
-}
+//function showBridgePreview(wikiDataID) {
+//    $('#spinner').hide();
+//    var preview = { "wikiDataID": wikiDataID};
+//    $.ajax({
+//        url: 'ajax/getPreview',
+//        method: 'get',
+//        data: preview,
+//        success: function(response, statusText, xhr) {
+//            $('#preview').html(response);
+//            $('#preview').show();
+//        }
+//    });
+//}
 
 
 function expand(wikiDataID, rowNum) {
@@ -51,6 +52,8 @@ function expand(wikiDataID, rowNum) {
         $('#expandArrow_' + rowNum).html('expand_more');
         $('.collapsible').collapsible('close',rowNum);
     } else {
+
+        $('#spinner').show();
         var len = activeHeader.length;
         for(i = 0; i < len; i++) {
           $('.collapsible').collapsible('close',i);
@@ -61,6 +64,7 @@ function expand(wikiDataID, rowNum) {
                method: 'get',
                data: preview,
                success: function(response, statusText, xhr) {
+                    $('#spinner').hide();
                     $('#col_' + wikiDataID).html(response);
                     $('.collapsible').collapsible('open',rowNum);
                     $('.bridgeCollapsibleArrow').html('expand_more');
