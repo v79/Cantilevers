@@ -4,6 +4,7 @@ import org.slf4j.LoggerFactory
 import spark.Request
 import spark.Response
 import spark.Session
+import spark.TemplateEngine
 import spark.kotlin.after
 import spark.kotlin.before
 import spark.kotlin.notFound
@@ -18,6 +19,7 @@ abstract class AbstractController(path: String) {
 	private val FLASH_COUNT_MAX = 3
 
 	open val logger = LoggerFactory.getLogger(AbstractController::class.java)
+	// TODO: make this engine a bit more generic
 	protected val engine: ThymeleafTemplateEngine = ThymeleafTemplateEngine()
 
 	var session: Session? = null

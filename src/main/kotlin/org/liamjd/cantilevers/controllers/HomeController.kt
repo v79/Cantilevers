@@ -1,5 +1,6 @@
 package org.liamjd.cantilevers.controllers
 
+import org.liamjd.caisson.controllers.AbstractController
 import org.liamjd.cantilevers.annotations.SparkController
 import org.liamjd.cantilevers.controllers.validators.BridgeValidator
 import spark.ModelAndView

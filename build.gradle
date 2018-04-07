@@ -3,12 +3,13 @@ version '0.0.1-SNAPSHOT'
 
 buildscript {
     // declare some versions
-    ext.kotlin_version = '1.2.10'
+    ext.kotlin_version = '1.2.31'
     ext.spark_kotlin_version = '1.0.0-alpha'
     ext.thymeleaf_version = '3.0.6.RELEASE'
     ext.kodein_version = '4.1.0'
     ext.exposed_version = '0.9.1'
     ext.wdtk_version = '0.8.0'
+    ext.caisson_version = '0.2.3-SNAPSHOT'
 
     repositories {
         mavenLocal()
@@ -36,6 +37,8 @@ dependencies {
 
     // spark web framework
     compile group: 'com.sparkjava', name: 'spark-kotlin', version: "$spark_kotlin_version"
+    compile group: 'org.liamjd', name: 'caisson', version: "$caisson_version"
+
     // Thymeleaf templating engine
     compile group: 'org.thymeleaf', name:"thymeleaf", version: "$thymeleaf_version"
     compile group: 'org.thymeleaf.extras', name: 'thymeleaf-extras-java8time', version: '3.0.0.RELEASE'

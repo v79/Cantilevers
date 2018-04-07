@@ -4,6 +4,7 @@ import com.github.salomonbrys.kodein.Kodein
 import com.github.salomonbrys.kodein.bind
 import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.provider
+import org.liamjd.caisson.controllers.AbstractController
 import org.liamjd.cantilevers.annotations.SparkController
 import org.liamjd.cantilevers.services.sparql.SparqlService
 import org.liamjd.cantilevers.services.sparql.WikiDataSparqlService
