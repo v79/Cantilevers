@@ -7,7 +7,7 @@ buildscript {
     ext.spark_kotlin_version = '1.0.0-alpha'
     ext.thymeleaf_version = '3.0.6.RELEASE'
     ext.kodein_version = '4.1.0'
-    ext.exposed_version = '0.9.1'
+    ext.exposed_version = '0.10.2'
     ext.wdtk_version = '0.8.0'
 
     repositories {
