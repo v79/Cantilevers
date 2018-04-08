@@ -5,6 +5,7 @@ import com.github.salomonbrys.kodein.bind
 import com.github.salomonbrys.kodein.instance
 import com.github.salomonbrys.kodein.provider
 import org.liamjd.caisson.controllers.AbstractController
+import org.liamjd.caisson.webforms.Form
 import org.liamjd.cantilevers.annotations.SparkController
 import org.liamjd.cantilevers.services.sparql.SparqlService
 import org.liamjd.cantilevers.services.sparql.WikiDataSparqlService
@@ -53,12 +54,10 @@ class BridgeController : AbstractController("/bridge") {
 				post("/triggerSearch") {
 					// /bridge/ajax/triggerSearch
 					// TODO: Validate the bridge name
-					var bridgeName: String? = request.queryParams("bridgeName")
-					if (bridgeName == null) {
-						bridgeName = model["bridgeName"] as String
-					}
+					val bridge: Bridge = Form(request, Bridge::class).get() as Bridge
+
 					model.remove("results")
-					suggestions = getWikidataSuggestions(bridgeName)
+					suggestions = getWikidataSuggestions(bridge.name)
 					model.put("results", suggestions)
 
 					engine.render(ModelAndView(model, viewPath), "results")

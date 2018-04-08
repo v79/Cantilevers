@@ -1,5 +1,5 @@
 group 'org.liamjd'
-version '0.0.1-SNAPSHOT'
+version '0.0.2-SNAPSHOT'
 
 buildscript {
     // declare some versions
@@ -9,7 +9,7 @@ buildscript {
     ext.kodein_version = '4.1.0'
     ext.exposed_version = '0.9.1'
     ext.wdtk_version = '0.8.0'
-    ext.caisson_version = '0.2.3-SNAPSHOT'
+    ext.caisson_version = '0.2.4-SNAPSHOT'
 
     repositories {
         mavenLocal()

@@ -4,7 +4,6 @@ import org.slf4j.LoggerFactory
 import spark.Request
 import spark.Response
 import spark.Session
-import spark.TemplateEngine
 import spark.kotlin.after
 import spark.kotlin.before
 import spark.kotlin.notFound
@@ -14,6 +13,7 @@ import spark.template.thymeleaf.ThymeleafTemplateEngine
  * Base class for all controllers. It defines a logger and the rendering engine, plus before and after filters,
  * notFound routes, and other common routes
  */
+@Deprecated("Now use the version from Caisson instead")
 abstract class AbstractController(path: String) {
 
 	private val FLASH_COUNT_MAX = 3
