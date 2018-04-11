@@ -3,7 +3,7 @@ version '0.0.1-SNAPSHOT'
 
 buildscript {
     // declare some versions
-    ext.kotlin_version = '1.2.10'
+    ext.kotlin_version = '1.2.31'
     ext.spark_kotlin_version = '1.0.0-alpha'
     ext.thymeleaf_version = '3.0.6.RELEASE'
     ext.kodein_version = '4.1.0'
