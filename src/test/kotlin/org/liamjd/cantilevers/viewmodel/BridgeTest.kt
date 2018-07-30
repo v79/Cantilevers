@@ -56,7 +56,7 @@ class BridgeTest {
 		// setup
 		val dateFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("yyyy MM dd")
 		var bridge: Bridge = Bridge(name = TayBridge.name, wikiDataID = TayBridge.wikiDataID, coords = TayBridge.coords, description = TayBridge.desc, length = TayBridge.length, wikiDataJSON = TayBridge.wikiDataJSON)
-		val expectedDate: LocalDate = LocalDate.parse("2018 03 20", dateFormat)
+		val expectedDate: LocalDate = LocalDate.parse("2018 07 20", dateFormat)
 
 		// execute
 		bridge.extractBasicFields()
