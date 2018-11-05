@@ -6,7 +6,7 @@ import com.beust.klaxon.obj
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
-data class Bridge(val wikiDataID: String, val name: String, val description: String?, val length: Int?, val wikiDataJSON: String?, val coords: String?) {
+data class Bridge(val wikiDataID: String, val name: String, val description: String?, val length: Float?, val wikiDataJSON: String?, val coords: String?) {
 
 	var lastModified: LocalDate? = null
 

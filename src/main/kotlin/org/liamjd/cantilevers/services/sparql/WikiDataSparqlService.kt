@@ -78,7 +78,7 @@ class WikiDataSparqlService : SparqlService {
 			jsonArray?.forEach {
 				val name = it.obj("bridgeLabel")?.string("value")
 				val description = it.obj("bridgeDescription")?.string("value")
-				val length = it.obj("length")?.string("value")
+				val length = it.obj("length")?.string("value")?.toFloat()
 				val coords = it.obj("coord")?.string("value")
 //			val types = it.obj("typeLabel")?.get("value") as String
 				val wikidataURI = it.obj("bridge")?.string("value")
@@ -86,7 +86,7 @@ class WikiDataSparqlService : SparqlService {
 				val wikidatajsonurl = URL("https://www.wikidata.org/wiki/Special:EntityData/" + wikidataID + ".json")
 				val wikidatajson = wikidatajsonurl.readText()
 				val fullJson = parser.parse(StringBuilder(wikidatajson)) as JsonObject
-				val bridge: Bridge = Bridge(wikiDataID = wikidataID!!, name = name!!, description = description, length = length?.toInt(), coords = coords, wikiDataJSON = fullJson.toJsonString(true))
+				val bridge: Bridge = Bridge(wikiDataID = wikidataID!!, name = name!!, description = description, length = length, coords = coords, wikiDataJSON = fullJson.toJsonString(true))
 				logger.info("Bridge found: ${bridge}")
 				bridgeList.add(bridge)
 			}

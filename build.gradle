@@ -32,7 +32,7 @@ repositories {
 dependencies {
     // Kotlin language
     compile group: 'org.jetbrains.kotlin', name: 'kotlin-reflect', version: "$kotlin_version"
-    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jre8', version: "$kotlin_version"
+    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib-jre8', version: "1.2.71"
 
     // spark web framework
     compile group: 'com.sparkjava', name: 'spark-kotlin', version: "$spark_kotlin_version"
